@@ -293,7 +293,7 @@ average pigment_map{
                    roughness 0.00525953405237193 //surface roughness: 0.0005 -> 1
                    phong  0 phong_size 0 //Phong specular disabled
                    
-                   ambient <0,0,0> emission srgb <1.00,1.00,1.00> //ambient RGB color: 0->1 for each component
+                   ambient <0,0,0> emission rgb <1.00,1.00,1.00> //ambient RGB color: 0->1 for each component
                    diffuse  0.6 
                    reflection{0 } conserve_energy //reflection amount: 0 -> 1
                    }
@@ -318,7 +318,7 @@ material{
                    roughness 0.00525953405237193 //surface roughness: 0.0005 -> 1
                    phong  0 phong_size 0 //Phong specular disabled
                    
-                   ambient <0,0,0> emission srgb <1.00,1.00,1.00> //ambient RGB color: 0->1 for each component
+                   ambient <0,0,0>  //ambient RGB color: 0->1 for each component
                    diffuse  0.6 
                    reflection{0 } conserve_energy //reflection amount: 0 -> 1
                    }

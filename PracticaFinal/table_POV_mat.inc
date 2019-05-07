@@ -280,8 +280,8 @@ average pigment_map{
  
 //==================================================
 //Map definitions
-#declare p_map1=pigment {image_map{jpeg "E:/PracticaFinal/Tabel/tex/WoodSeemles1.jpg"   transmit all 0 } }
-#declare p_map2=pigment {image_map{jpeg "E:/PracticaFinal/Tabel/tex/WoodSeemles.jpg"   transmit all 0 } }
+#declare p_map1=pigment {image_map{jpeg "Tabel/tex/WoodSeemles1.jpg"   transmit all 0 } }
+#declare p_map2=pigment {image_map{jpeg "Tabel/tex/WoodSeemles.jpg"   transmit all 0 } }
  
 //==================================================
 //Material definitions

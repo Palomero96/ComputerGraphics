@@ -1,7 +1,7 @@
 
 
 #version 3.7;
-global_settings{ 
+/*global_settings{ 
 
           
 ambient_light rgb<1, 0, 1> 
@@ -20,8 +20,21 @@ ambient_light rgb<1, 0, 1>
       brightness 2.5
 
       
-    }}
-#default{ finish{ ambient 0.2 diffuse 0.7}} 
+    }} 
+    */
+    global_settings{
+  radiosity {             // --- Settings 3 (high quality) ---      
+    brightness 2.5
+    pretrace_start 0.08
+    pretrace_end   0.005
+    count 800  
+    //count 200
+    error_bound 1
+    //error_bound 0.1
+    recursion_limit 2
+  }
+ }// end global_settings
+#default{ finish{ ambient 0.2 diffuse 0.6}} 
 
 //--------------------------------------------------------------------------
 #include "colors.inc"
@@ -53,9 +66,13 @@ Escena: Noche con luz encendida, Dia con sol entrando por la ventana
 
 /*ORDEN
 1. Objetos
-2. Texturas:   Pared Techo y piscina
+2. Texturas:   
 3. Iluminacion: Sombras del techo? 
-
+  
+Falta:
+- Colores Piscina Paredes suelo
+- texturas pared  
+  
 */
 
 /* Z de alante atras
@@ -80,7 +97,7 @@ Escena: Noche con luz encendida, Dia con sol entrando por la ventana
                             look_at   <0.0 , 1.0 , 0.0>}
 camera{Camera_0}
 
-light_source{< -170,300,-5>  1} 
+light_source{< -170,300,-5>  10} 
 //light_source { <10000000, 0, -10000000>, 1 media_interaction off }  //-160,300,-25  -90,150,20       -400, 500,0
 
 
@@ -94,31 +111,60 @@ light_source{< -170,300,-5>  1}
 */ 
 
 
-#declare TextPared = 
+#declare TextParedIZ = 
 texture{  
      pigment{ brick
               color Black
-              color  rgb<249/255, 222/255, 162/255>
-              // color mortar, color brick
-              brick_size <1, 2, 3 >
-              // format in x-,y-,z- direction
-              mortar 0.02 // size of the mortar
-            }
-    // normal { scale 1 turbulence 1.0 }  //revisar que poner a la parte de arriba
+     
+               color  rgb<255/255, 221/255, 153/255>
+              brick_size <1, 3, 7 >
+              
+              mortar 0.01 
+            }   
+            normal { brick 0.01 brick_size <1, 3, 7 >
+              mortar 0.01 
+               }  
      finish { diffuse 0.9 phong 0.4}
-     }
+     } 
+#declare TextParedDER = 
+texture{  
+     pigment{ brick
+              color Black
+              color  rgb<255/255, 221/255, 153/255>
+              brick_size <7, 3, 1 >
+              
+              mortar 0.02 
+            }   
+            normal { brick 0.02 brick_size <7, 3, 1 >
+              mortar 0.02 
+               }  
+     finish { diffuse 0.9 phong 0.4}
+     }     
 
+#declare TextPared_bandas=
+texture{
+ pigment{ gradient <0,1,0>
+                color_map {
+                  [0.0 color Clear]
+                  [0.7 color Clear]
+                  [0.7 color rgbt<128/255, 83/255, 0/255,0.95>]
+                  [1.0 color rgbt<128/255, 83/255, 0/255,0.95>]
+                  }
+                scale <1,0.8,1>
+              }  
+}
      
                  
 #declare ParedEnfrente= difference{
 box {  //Pared de enfrente  
         < -(Distancia)-2, -Suelo, (Distancia) >,
-        <  (Distancia)*2.5, Altura-6, (Distancia)+3 >
-} 
+        <  (Distancia)*2.5, Altura-6, (Distancia)+3 > 
+        texture {TextParedDER} texture {TextPared_bandas}
+}       
 box {  //Hueco
         < -(Distancia)*0.72+7, 20, (Distancia)-0.001>,
         <  (Distancia)*2.5, 21, (Distancia)+2>
-        texture{ pigment{ color rgb<74/255, 37/255, 0>}} //cambiar color
+        texture{ pigment{color  rgb<255/255, 221/255, 153/255> }}
 }     
     
 }
@@ -129,13 +175,13 @@ object{ParedEnfrente}
     box { //Pared de la izquierda
         < -(Distancia)-2, -Suelo, -(Distancia) >
         < -(Distancia)-2, Altura-5.5, (Distancia) > 
-        
+         texture {TextParedIZ} texture {TextPared_bandas}
    
     }
      
 } 
 
-object{Paredes finish {  diffuse 1 phong 0.3}  texture {TextPared}
+object{Paredes finish {  diffuse 1 phong 0.3}  
 } 
 
                       /*      SUELO     */
@@ -157,7 +203,7 @@ box {     //Suelo Derecha
     
 } 
 box {     //Suelo Derecha  linea
-    < -(Distancia)*0.453, -1-Suelo, (Distancia) >,
+    < -(Distancia)*0.451, -1-Suelo, (Distancia) >,
     < -(Distancia)*0.45,  0.01-Suelo,  (Distancia)*0.8 >
      pigment { color Black}
 } 
@@ -165,8 +211,8 @@ box {     //Suelo Derecha  linea
 } 
 #declare hueco= box { 
         < -(Distancia)*0.72+12, -1-4, (Distancia)*0.8>,
-        < -(Distancia)*0.72+15.5, 0-4, (Distancia)*0.8+0.8>
-        pigment { color White  filter 1}
+        < -(Distancia)*0.72+15.5, 0-4, (Distancia)*0.8+0.8-0.001>
+        pigment { color Clear}
     }
 
 #declare SueloHueco = difference {
@@ -174,18 +220,19 @@ box {     //Suelo Derecha  linea
   object{hueco}
   } 
   
-  object{SueloHueco texture{ //pigment {color rgb<74/255, 37/255, 0>}
+  object{SueloHueco texture{ 
           pigment {
-      gradient z       //this is the PATTERN_TYPE
-      color_map {
-        [0.4 color rgb<74/255, 37/255, 0>]
-        [0.5 color rgb<204/255, 153/255, 0> ]    
-        [0.55 color Black]
-        [0.6 color rgb<204/255, 153/255, 0>]
-        [0.8 color rgb<74/255, 37/255, 0>]
-      }
+      gradient z       
       
-     scale 0.25
+     color_map {                               
+        [0.0 color rgb<102/255, 53/255, 0>]
+        [0.3 color rgb<102/255, 53/255, 0> ]    
+        [0.3 color rgb<153/255, 79/255, 0>]
+        [0.6 color rgb<153/255, 79/255, 0>]
+        [0.6 color rgb<128/255, 66/255, 0>]
+        [1.0 color rgb<128/255, 66/255, 0>] 
+      }  
+     scale 0.5
     }
           
   }
@@ -198,15 +245,11 @@ box {     //Suelo Derecha  linea
         /* TECHO */
     
  #declare Pigtecho =
-      
-      
+
      texture{ 
-      
-     
     pigment{ 
               color  rgb<204/255, 153/255, 102/255> 
-               
-          
+ 
             } }
                                  
 #declare Techo =  box { 
@@ -244,7 +287,7 @@ box {
         texture { pigment {color Black}}
     } 
     
-object{Techo texture { Pigtecho } finish{diffuse 1 emission 0.9}}
+object{Techo texture { Pigtecho } finish{diffuse 0.8 reflection 0.5 phong 0.2}}
     
 #declare RectTecho =  box { 
         <  -(Distancia)-2, Altura-10, (Distancia)-5> , 
@@ -252,21 +295,17 @@ object{Techo texture { Pigtecho } finish{diffuse 1 emission 0.9}}
         <  -(Distancia)-2+4+4.5, Altura-6, (Distancia)-5-4>
         texture { pigment{
         gradient x       
-          color_map {
+        color_map {
         
-        [0.5 color rgb<102/255, 51/255, 0> ]    
-        
-        [1 color rgb<153/255, 77/255, 0>]
+        [0.5 color rgb<26/255, 13/255, 0> ]    
+        [1 color rgb<51/255, 26/255, 0>]
        
         }} 
         scale 0.2}
-        finish { diffuse 1 phong 1 }
+        finish { diffuse 1 reflection 0.1 phong 0.2 }
     }  
   
        
-//object{RectTecho} 
-//object{RectTecho translate<8.55,0,0>}
-//object{RectTecho translate<17.2,0,0>}
 #for (i,0,51.6,8.56)
 object{RectTecho translate<i,0,0>}
 object{RectTecho translate<i,0,-4.17>}
@@ -274,28 +313,22 @@ object{RectTecho translate<i,0,-4.16*2>}
 object{RectTecho translate<i,0,-4.16*3>}
 #end 
 
-/*#for (i,0,22.5,6)
-box { 
-        <  -(Distancia)-2+0.1+i, Altura-10, (Distancia)-5> , 
-         //<  (Distancia)*2.5, Altura-6, (Distancia) >
-        <  -(Distancia)-2+4+4.5+0.1+i, Altura-6, (Distancia)-5-4>  
-        pigment{color Brown} }
- //object{RectTecho translate<0.5+i,0,0>}                          
- //object{RectTecho translate<0,0,0>}
-      
-#end */ 
+ 
 
                 /* PISCINA */
 /* Es posible que haya que anadir otra caja para el hueco de la escalera*/                
-                
+/* Darle textura*/                
 #declare Piscina = box {    
      < -(Distancia)*0.72, -0.4-4, (Distancia)*0.8+0.8 >,
     <  (Distancia)*2.5, -(Distancia)*0.25-4, -(Distancia) >
-    pigment { color Blue }
+    texture{
+    pigment { rgb<0/255, 190/255,210/255> }   
+     normal{ bumps 0.001 }
+    }
 }   
 
 
-object{Piscina finish { diffuse 0.8 reflection 0.5 phong 0.2}}
+object{Piscina finish { reflection 0.5 phong 0.2}}
  
 /* Esfera para utilizar de referencia*/
 #declare Referencia = sphere { < -(Distancia)-2, Altura-10, (Distancia)-5>, 3 
@@ -335,7 +368,7 @@ box {     //Senton
 } 
 }
 
-object{Banco pigment{color  rgb<204/255, 153/255, 102/255>} scale 2.7 translate<-39.9-2,0-4,30>}
+object{Banco pigment{color  rgb<249/255, 222/255, 162/255>} scale 2.7 translate<-39.9-2,0-4,30>}
 
                /* ESCALERA*/
 #declare Radio=0.2; //Parametro principal a modificar parala dimension                      
@@ -380,7 +413,7 @@ cylinder { <0,0.0001,0>,<0,0,0>, 0.50
 object{mediaescalera} 
 object{mediaescalera  translate<0,0,-3>}  
 }
-object{escalera  texture { finish { diffuse 0.4 specular 0.9 metallic } 
+object{escalera  texture { finish { diffuse 0.6 specular 0.9 metallic phong 1 phong_size 2 } 
 pigment{color Gray50}} scale 0.7 rotate<0,90,0> translate<-(Distancia)*0.72+15, 0.01-4, (Distancia)*0.8+3>} 
  
                
