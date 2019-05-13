@@ -39,7 +39,9 @@ ambient_light rgb<1, 0, 1>
 #include "transforms.inc"
 #include "table_POV_geom.inc" //Geometry
 #include "chair_POV_geom.inc" //Geometry  
-#include "Aire_POV_geom.inc" //Geometry
+#include "Aire_POV_geom.inc" //Geometry 
+#include "Refrigerator_POV_geom.inc" //Geometry
+
 #declare Distancia = 20;
 #declare Altura = 10;
 #declare Suelo= 4;
@@ -142,7 +144,9 @@ object{
       Aire_    scale 0.0032    rotate x*180 rotate z*180 translate < 3, 8, 10 >
       } 
  
-      
+object{
+      Refrigerator_   scale 0.0030      rotate y*-90  translate < -4, 0, 1.85 >
+      }      
  //object{chair_}           
  
 
