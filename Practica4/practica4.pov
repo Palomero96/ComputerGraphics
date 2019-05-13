@@ -1,39 +1,18 @@
 
 
 #version 3.7;
-/*global_settings{ 
 
-          
-ambient_light rgb<1, 0, 1> 
- radiosity {
-      pretrace_start 1.
-      pretrace_end   0.01
-      count 200
-
-      nearest_count 10
-      error_bound 0.8
-      recursion_limit 4
-
-      low_error_factor 0.5
-      gray_threshold 1
-      minimum_reuse 0.015
-      brightness 2.5
-
-      
-    }} 
-    */
     global_settings{
-  radiosity {             // --- Settings 3 (high quality) ---      
+  radiosity {                  
     brightness 2.5
     pretrace_start 0.08
     pretrace_end   0.005
     count 800  
-    //count 200
-    error_bound 1
-    //error_bound 0.1
+  
+    error_bound 0.1
     recursion_limit 2
   }
- }// end global_settings
+ }
 #default{ finish{ ambient 0.2 diffuse 0.6}} 
 
 //--------------------------------------------------------------------------
@@ -53,27 +32,7 @@ ambient_light rgb<1, 0, 1>
 #declare Distancia = 40;
 #declare Altura = 35;
 #declare Suelo= 4;
-/* Practica Final  
-Elementos
-- Mesa
-- Cuatro sillas
-- Ventana
-- Reloj
-- Mueble/Encimera
-- Puerta?
-Escena: Noche con luz encendida, Dia con sol entrando por la ventana 
-*/
 
-/*ORDEN
-1. Objetos
-2. Texturas:   
-3. Iluminacion: Sombras del techo? 
-  
-Falta:
-- Colores Piscina Paredes suelo
-- texturas pared  
-  
-*/
 
 /* Z de alante atras
  X de izquierda y derecha
@@ -98,17 +57,8 @@ Falta:
 camera{Camera_0}
 
 light_source{< -170,300,-5>  10} 
-//light_source { <10000000, 0, -10000000>, 1 media_interaction off }  //-160,300,-25  -90,150,20       -400, 500,0
-
-
-
- 
 
                     /*      PARED */
-
-/* Es posible que las paredes tengan que tener mas grosor
-    En especial la del frente porque hay que quitarle algo (dos objetos: una tira y un hueco)
-*/ 
 
 
 #declare TextParedIZ = 
@@ -275,7 +225,7 @@ box {     //Suelo Derecha  linea
     box { 
         < -2-(Distancia)+4+i+i/4+0.01, Altura-10.001, (Distancia)+0.1 >,
         <  -2-(Distancia)+8+i+i/4+0.01, Altura-5.9999, (Distancia)-5.0001 >
-       // pigment { color  rgb<204/255, 153/255, 102/255>}
+       
     } 
     }  
 #end
@@ -291,7 +241,6 @@ object{Techo texture { Pigtecho } finish{diffuse 0.8 reflection 0.5 phong 0.2}}
     
 #declare RectTecho =  box { 
         <  -(Distancia)-2, Altura-10, (Distancia)-5> , 
-         //<  (Distancia)*2.5, Altura-6, (Distancia) >
         <  -(Distancia)-2+4+4.5, Altura-6, (Distancia)-5-4>
         texture { pigment{
         gradient x       
@@ -316,8 +265,7 @@ object{RectTecho translate<i,0,-4.16*3>}
  
 
                 /* PISCINA */
-/* Es posible que haya que anadir otra caja para el hueco de la escalera*/                
-/* Darle textura*/                
+               
 #declare Piscina = box {    
      < -(Distancia)*0.72, -0.4-4, (Distancia)*0.8+0.8 >,
     <  (Distancia)*2.5, -(Distancia)*0.25-4, -(Distancia) >
@@ -344,8 +292,7 @@ object{Piscina finish { reflection 0.5 phong 0.2}}
                
 
                 /* BANCO */ 
-/*Revisar dimensiones cuando coloque la camara*/      
-                
+                     
 #declare GrosorBanco=0.2;
 #declare AlturaBanco=0.8;
  
@@ -373,11 +320,11 @@ object{Banco pigment{color  rgb<249/255, 222/255, 162/255>} scale 2.7 translate<
                /* ESCALERA*/
 #declare Radio=0.2; //Parametro principal a modificar parala dimension                      
                        
-/* Revisar dimensiones despues de colocar la camara */                       
+                       
 #declare mediaescalera = union{  
   //Parte suelo
    cylinder { <0,0,0>,<0,3.00,0>, Radio 
-          //texture {finish {Metal}}
+          
                     
   }       
   //Parte curva
@@ -385,7 +332,7 @@ object{Banco pigment{color  rgb<249/255, 222/255, 162/255>} scale 2.7 translate<
                            Radio, // radius minor, 
                            -150  
                          ) //-----------------------------------
-        //texture {finish {Metal}}  
+        
                  
                  
         scale <1,1,1> rotate<-90,180,0> translate<1,3,0>
@@ -394,7 +341,7 @@ object{Banco pigment{color  rgb<249/255, 222/255, 162/255>} scale 2.7 translate<
       
  //Parte agua               /* Cambiar el valor Y del primer punto para alargarlo mas*/
  cylinder { <0,-3,0>,<0,3.68,0>, Radio 
-           ///texture {finish {Metal}}
+           
                    
                rotate<0,0,30> translate<3.7,0.32,0>    
                     
@@ -402,7 +349,7 @@ object{Banco pigment{color  rgb<249/255, 222/255, 162/255>} scale 2.7 translate<
    
   //Base
 cylinder { <0,0.0001,0>,<0,0,0>, 0.50 
-        //texture {finish {Metal}}
+        
                     
          
 
@@ -418,8 +365,7 @@ pigment{color Gray50}} scale 0.7 rotate<0,90,0> translate<-(Distancia)*0.72+15, 
  
                
                /*PALO*/ 
-/* Es posible que haya que poner otro cilindro o hacerlo con un spline porque hay diferente grosor*/               
-               
+                             
 #declare Palo = cylinder { <0,0,0>,<0,8.00,0>, 0.10 
            texture { pigment { color Gray50 }
                    }
