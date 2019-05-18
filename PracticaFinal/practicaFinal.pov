@@ -3,8 +3,7 @@
 #version 3.7;
 global_settings{ 
 
-          
-ambient_light rgb<1, 0, 1> 
+           
  radiosity {
       pretrace_start 1.
       pretrace_end   0.01
@@ -80,8 +79,9 @@ Escena: Noche con luz encendida, Dia con sol entrando por la ventana
                             look_at   <0.0 , 1.0 , 0.0>}
 camera{Camera_1}
 
-light_source{< -170,300,-5>  1}
+light_source{< -20,25,50>  5}
 
+plane{ <0,0,1>, 200 pigment{color Blue}}
                 /* Paredes */
 /* Pared de enfrente */          
  //Para hacer el marco de la ventana               
@@ -118,18 +118,26 @@ light_source{< -170,300,-5>  1}
         <  -(Distancia/4)+3.6, Altura-2.7, (Distancia/2)-0.0001>
     }
 }
-
+#declare textureCristal=texture{
+  pigment{ rgbf<0.98,0.98,0.98,0.8>}
+  finish { diffuse 0.1
+           reflection 0.05
+           specular 0.8
+           roughness 0.0003
+           phong 1
+           phong_size 400}
+  }
 #declare paredEnfrente=union{
 	object{paredEnfrente}	
 	   box {    //Hueco cristal
         < -(Distancia/4)+1.7, Altura-6.3, (Distancia/2)>,
         <  -(Distancia/4)+3.4, Altura-2.7, (Distancia/2)>
-        pigment{color White}
+        texture{textureCristal}
     }
      box {    //Hueco cristal
         < -(Distancia/4)+5.3, Altura-6.3, (Distancia/2)>,
         <  -(Distancia/4)+3.6, Altura-2.7, (Distancia/2)>
-        pigment{color White}
+         texture{textureCristal}
     }
 }	     
    
@@ -248,6 +256,7 @@ object{tirador translate<(Distancia/4)-2.9, 2, (Distancia/2)-6.25> }
 object{tirador translate<(Distancia/4)-2.9, 2, (Distancia/2)-9.5> }
 object{tirador translate<(Distancia/4)-2.9, 2, (Distancia/2)-12> } 
 object{tirador translate<(Distancia/4)-2.9, 1.3, (Distancia/2)-12>}
+
 #declare vitro=
 	box {  //Vitro
         < (Distancia/4)-0.6, 2.53, (Distancia/2)-11>,
@@ -256,14 +265,59 @@ object{tirador translate<(Distancia/4)-2.9, 1.3, (Distancia/2)-12>}
     }	 
 	
 object{vitro}
-    
+
+#declare cajones= 
+  	box {  
+        < (Distancia/4), 4.5, (Distancia/2)-3.8>,
+        < (Distancia/4)-2, 7, -(Distancia/2) > 
+         pigment{color White}
+    }	   
+
+object{cajones}
+#declare relieve= union{
+  	box {  
+        < (Distancia/4), 4.8, (Distancia/2)-4.3>,
+        < (Distancia/4)-2.02, 6.7, (Distancia/2)-7.7> 
+        
+    }	  
+    	box {  
+        < (Distancia/4), 4.8, (Distancia/2)-8.3>,
+        < (Distancia/4)-2.02, 6.7, -(Distancia/2)> 
+        
+    }	 
+     pigment{color Red}
+}   
+object{relieve}
+#declare separadorc = box {  
+      < (Distancia/4), 4.5, (Distancia/2)-8>,
+        < (Distancia/4)-2.001, 7, (Distancia/2)-8.01 > 
+         pigment{color Black}
+    }
+object{separadorc}
+#declare tiradorvertical=union{
+cylinder {
+	<0.0, 0, 0.0>, <0.0, 0.25, 0.0>, 0.008	
+}
+cylinder {
+	<0.0, 0.05, 0.0>, <0.05, 0.05, 0>, 0.008
+}
+cylinder {
+	<0.0, 0.2, 0>, <0.05, 0.2, 0>, 0.007		
+}
+pigment{color Green}
+scale 2.7
+
+}
+object{tiradorvertical translate<(Distancia/4)-2.1, 5.25, (Distancia/2)-7.9> }
+//object{tiradorvertical translate<(Distancia/4)-2.1, 5.25, (Distancia/2)-8.2> }
+
        /* TECHO */
 #declare Techo=box {
     < -(Distancia/4), Altura, -(Distancia/2) >,
     <  (Distancia/4), Altura + 1,  (Distancia/2) >
     pigment { color White }
 }      
-//object{Techo}  
+object{Techo}  
 
 
                 /* Suelo */      
