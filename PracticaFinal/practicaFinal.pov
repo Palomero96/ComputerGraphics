@@ -20,7 +20,7 @@ global_settings{
 
       
     }}
-#default{ finish{ ambient 0.2 diffuse 0.7}} 
+#default{ finish{ ambient 0.2 diffuse 0.6}} 
 
 //--------------------------------------------------------------------------
 #include "colors.inc"
@@ -81,28 +81,38 @@ camera{Camera_1}
 
 light_source{< -20,25,50>  5}
 
-plane{ <0,0,1>, 200 pigment{color Blue}}
+plane{ <0,0,1>, 200 pigment{color rgb<51/255,255/255,255/255> }}
                 /* Paredes */
 /* Pared de enfrente */          
+#declare ParedText=  texture{
+       	pigment { color rgb<0/255,102/255,204/255> } 
+      	//normal {bozo 10 scale 0.05}
+       } 
+       
  //Para hacer el marco de la ventana               
 #declare paredEnfrente= difference{
 	  box {    //Pared de enfrente
         < -(Distancia/4), 0, (Distancia/2) >,
         <  (Distancia/4), Altura, (Distancia/2)>
-        pigment { color Blue } 
+       texture{ ParedText}
     }
     box {    //Marco ventana
         < -(Distancia/4)+1.5, Altura-6.5, (Distancia/2)+0.0001 >,
         <  -(Distancia/4)+5.5, Altura-2.5, (Distancia/2)-0.0001>
         
     }
-}        
+}      
+ 
+       
 #declare paredEnfrente=union{
 	object{paredEnfrente}
 	   box {    //marco ventana
         < -(Distancia/4)+1.5, Altura-6.5, (Distancia/2) >,
         <  -(Distancia/4)+5.5, Altura-2.5, (Distancia/2)>
-        pigment{color Yellow}
+       texture{
+        pigment{color rgb<204/255,153/255,0/255>}
+        finish{diffuse 0.8 specular 0.4}
+       }
     }
 }
 
@@ -146,6 +156,7 @@ plane{ <0,0,1>, 200 pigment{color Blue}}
 	    box {   //Pared de la derecha
         < (Distancia/4), 0, -(Distancia/2) >,
         < (Distancia/4), Altura, (Distancia/2) >
+     texture{ ParedText}
     }
 	    box {  
         < (Distancia/4)+0.0001, 0, (Distancia/2)-3.5>,
@@ -154,7 +165,7 @@ plane{ <0,0,1>, 200 pigment{color Blue}}
 }
 #declare paredDer=union{
 	object{paredDer}
-	//Puerta darle color o decidir que hacer con ella
+	//Puerta 
 	box {  
         < (Distancia/4), 0, (Distancia/2)-3.5>,
         < (Distancia/4), Altura-3.5, (Distancia/2)-0.5 > 
@@ -170,10 +181,9 @@ plane{ <0,0,1>, 200 pigment{color Blue}}
        box {   //Pared de la izquierda
         < -(Distancia/4), 0, -(Distancia/2)>,
         < -(Distancia/4), Altura, (Distancia/2) > 
-         
+         texture{ ParedText}
     }	
  	object{paredDer}
- 	 pigment { color Blue }
 }   
 
 object{Paredes}
@@ -184,12 +194,17 @@ object{Paredes}
  	box {  
         < (Distancia/4), 0, (Distancia/2)-4>,
         < (Distancia/4)-2.8, 2.3, -(Distancia/2) > 
-         pigment{color Brown}
+         texture{T_Wood12}
+         //pigment{color Brown}
     }	
-  	box {  //Marble
+  	box {  //Piedra de marmol de la encimera
         < (Distancia/4), 2.5, (Distancia/2)-3.8>,
         < (Distancia/4)-2.9, 2.3, -(Distancia/2) > 
-         pigment{color White}
+        texture{
+         pigment{color rgb <200/255,200/255,200/255>}
+         normal{marble 1.3 scale 0.5 turbulence 1.2}
+         finish{diffuse 0.9}
+        }
     }	  
  
 }
@@ -198,7 +213,7 @@ object{encimera}
 	  	box {  //Hueco de lavadero Habra que cambiarle el color
         < (Distancia/4)-0.6, 2, (Distancia/2)-4.4>,
         < (Distancia/4)-2.6, 2.5+0.0001, (Distancia/2)-8 > 
-         pigment{color Grey}
+         pigment{color rgb<140/255,140/255,140/255>}
     }	 
 }
 
@@ -247,7 +262,10 @@ cylinder {
 cylinder {
 	<0.0, 0.2, 0>, <0.05, 0.2, 0>, 0.007		
 }
-pigment{color Grey}
+texture{
+pigment{color rgb<155/255,155/255,155/255>}
+finish{diffuse 0.8 specular 0.7}
+}
 scale 2.7
 rotate x*90	
 }	
@@ -261,16 +279,21 @@ object{tirador translate<(Distancia/4)-2.9, 1.3, (Distancia/2)-12>}
 	box {  //Vitro
         < (Distancia/4)-0.6, 2.53, (Distancia/2)-11>,
         < (Distancia/4)-2.6, 2.5, (Distancia/2)-20 > 
-         pigment{color Black}
-    }	 
+        texture {
+        	   pigment{color Black}
+        	finish{diffuse 0.8 specular 0.4}
+        }
+    }
 	
-object{vitro}
+object{vitro }
 
 #declare cajones= 
   	box {  
         < (Distancia/4), 4.5, (Distancia/2)-3.8>,
         < (Distancia/4)-2, 7, -(Distancia/2) > 
-         pigment{color White}
+              texture{
+         pigment{color rgb <240/255,240/255,240/255>}
+                 }
     }	   
 
 object{cajones}
@@ -278,14 +301,31 @@ object{cajones}
   	box {  
         < (Distancia/4), 4.8, (Distancia/2)-4.3>,
         < (Distancia/4)-2.02, 6.7, (Distancia/2)-7.7> 
-        
+         pigment{
+     	gradient z
+     	color_map{
+     	[0.0  color White]
+     	[0.95  color White]
+     	[1  color Black]	
+     	}
+     	scale 0.5
+     	}
     }	  
     	box {  
         < (Distancia/4), 4.8, (Distancia/2)-8.3>,
         < (Distancia/4)-2.02, 6.7, -(Distancia/2)> 
-        
-    }	 
-     pigment{color Red}
+         pigment{
+     	gradient z
+     	color_map{
+     	[0.0  color White]
+     	[0.95  color White]
+     	[1  color Black]	
+     	}
+     	scale 0.5
+     	}
+    }	
+     
+    
 }   
 object{relieve}
 #declare separadorc = box {  
@@ -304,7 +344,10 @@ cylinder {
 cylinder {
 	<0.0, 0.2, 0>, <0.05, 0.2, 0>, 0.007		
 }
-pigment{color Green}
+texture{
+pigment{color rgb<155/255,155/255,155/255>}
+finish{diffuse 0.8 specular 0.7}
+}
 scale 2.7
 
 }
@@ -324,10 +367,21 @@ object{Techo}
 #declare Suelo = box {
     < -(Distancia/4), -1, -(Distancia/2) >,
     <  (Distancia/4),  0,  (Distancia/2) >
-    pigment { color Grey }
+    texture{
+    	pigment{ brick
+              color Black
+              	color rgb<102/255, 51/255, 0/255>
+              // color mortar, color brick
+              brick_size <0.5, 0.0525, 0.125 >
+              // format in x-,y-,z- direction
+              mortar 0.004 // size of the mortar
+            }
+            finish{diffuse 0.7}
+        }
+ 
 }
  
-object{Suelo}  
+object{Suelo}
     
     
     /*Objetos generados con Poseray */
@@ -355,7 +409,7 @@ object{
       } 
  
 object{
-      Refrigerator_   scale 0.0030      rotate y*-90  translate < -4, 0, 1.85 >
+      Refrigerator_   finish{diffuse 0.7 reflection 0.1} scale 0.0030      rotate y*-90  translate < -4, 0, 1.85 >
       } 
       
            
