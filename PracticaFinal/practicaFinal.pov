@@ -2,15 +2,23 @@
 
 #version 3.7;
 global_settings{ 
-
+ /* radiosity {                  
+    brightness 3
+    pretrace_start 0.08
+    pretrace_end   0.005
+    count 800  
+  
+    error_bound 0.1
+    recursion_limit 2 500 0.7
+  } */
            
  radiosity {
-      pretrace_start 1.
-      pretrace_end   0.01
-      count 200
+      pretrace_start 0.08
+      pretrace_end   0.005
+      count 500
 
       nearest_count 10
-      error_bound 0.8
+      error_bound 0.7
       recursion_limit 4
 
       low_error_factor 0.5
@@ -19,7 +27,8 @@ global_settings{
       brightness 3
 
       
-    }}
+    }
+    }
 #default{ finish{ ambient 0.2 diffuse 0.6}} 
 
 //--------------------------------------------------------------------------
@@ -39,7 +48,8 @@ global_settings{
 #include "table_POV_geom.inc" //Geometry
 #include "chair_POV_geom.inc" //Geometry  
 #include "Aire_POV_geom.inc" //Geometry 
-#include "Refrigerator_POV_geom.inc" //Geometry
+#include "Refrigerator_POV_geom.inc" //Geometry  
+#include "Grifo_geom.inc" //Geometry
 
 #declare Distancia = 20;
 #declare Altura = 10;
@@ -151,7 +161,7 @@ plane{ <0,0,1>, 200 pigment{color rgb<51/255,255/255,255/255> }}
     }
 }	     
    
-/*Pared de la izquierda*/
+/*Pared de la derecha*/
 #declare paredDer=difference{
 	    box {   //Pared de la derecha
         < (Distancia/4), 0, -(Distancia/2) >,
@@ -168,9 +178,11 @@ plane{ <0,0,1>, 200 pigment{color rgb<51/255,255/255,255/255> }}
 	//Puerta 
 	box {  
         < (Distancia/4), 0, (Distancia/2)-3.5>,
-        < (Distancia/4), Altura-3.5, (Distancia/2)-0.5 > 
+        < (Distancia/4), Altura-3.5, (Distancia/2)-0.5 >
+        texture{
          pigment{color White}
-
+         finish{diffuse 0.8 specular 0.5 reflection 0.1}
+        }
     }	
 
 	
@@ -330,7 +342,7 @@ object{cajones}
 object{relieve}
 #declare separadorc = box {  
       < (Distancia/4), 4.5, (Distancia/2)-8>,
-        < (Distancia/4)-2.001, 7, (Distancia/2)-8.01 > 
+        < (Distancia/4)-2.01, 7, (Distancia/2)-8.01 > 
          pigment{color Black}
     }
 object{separadorc}
@@ -374,7 +386,7 @@ object{Techo}
               // color mortar, color brick
               brick_size <0.5, 0.0525, 0.125 >
               // format in x-,y-,z- direction
-              mortar 0.004 // size of the mortar
+              mortar 0.002 // size of the mortar
             }
             finish{diffuse 0.7}
         }
@@ -411,9 +423,11 @@ object{
 object{
       Refrigerator_   finish{diffuse 0.7 reflection 0.1} scale 0.0030      rotate y*-90  translate < -4, 0, 1.85 >
       } 
-      
+object{
+      Faucet_Axor_Citterio_HighArc_Kitchen_N210818_  finish{diffuse 0.8 specular 0.7}  scale 2.2 rotate y*-90  translate < (Distancia/4)-1, 3, (Distancia/2)-6.5>
+      }      
            
- //object{chair_}           
+           
  
 
                 
